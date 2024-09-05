@@ -1,0 +1,131 @@
+/* General body styling to center the chat container and set font */
+body {
+    font-family: 'Arial', sans-serif; /* Setting a basic sans-serif font */
+    background-color: #f4f4f4; /* Light gray background */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center; /* Horizontally center */
+    align-items: center; /* Vertically center */
+    height: 100vh; /* Full viewport height */
+  }
+  
+  /* Main chat container for holding the chat window */
+  .chat-container {
+    background-color: #fff; /* White background */
+    width: 90%; /* Responsive width */
+    max-width: 500px; /* Maximum width */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Slight shadow for a 3D effect */
+    border-radius: 10px; /* Rounded corners */
+    overflow: hidden; /* Prevents overflow */
+    display: flex;
+    flex-direction: column; /* Column layout for header, body, and footer */
+  }
+  
+  /* Chat header style */
+  .chat-header {
+    background-color: #008080; /* Teal color */
+    color: #fff; /* White text */
+    text-align: center; /* Center the text */
+    padding: 20px; /* Padding around the header */
+  }
+  
+  /* Style for the header text */
+  .chat-header h1 {
+    margin: 0; /* Remove default margin */
+    font-size: 24px; /* Large font for the app name */
+  }
+  
+  /* Chat body where messages are displayed */
+  .chat-body {
+    flex: 1; /* Take all available space */
+    padding: 10px; /* Padding around the messages */
+    overflow-y: auto; /* Scrollable when messages overflow */
+    background-color: #e1f7f7; /* Light teal background */
+  }
+  
+  /* Individual message bubble */
+  .message {
+    padding: 10px; /* Padding inside the bubble */
+    border-radius: 5px; /* Rounded edges */
+    margin-bottom: 10px; /* Space between messages */
+    width: fit-content; /* Adjust width based on content */
+    max-width: 80%; /* Prevent messages from being too wide */
+  }
+  
+  /* Sent messages styling */
+  .message.sent {
+    background-color: #008080; /* Teal background */
+    color: #fff; /* White text for contrast */
+    margin-left: auto; /* Align sent messages to the right */
+  }
+  
+  /* Received messages styling */
+  .message.received {
+    background-color: #d3f5f5; /* Light teal background */
+    color: #000; /* Black text */
+  }
+  
+  /* Timestamp styling */
+  .message .time {
+    font-size: 12px; /* Smaller font size */
+    text-align: right; /* Align timestamp to the right */
+    margin-top: 5px; /* Spacing above the timestamp */
+    color: #555; /* Slightly faded color for the timestamp */
+  }
+  
+  /* Input section where users type messages */
+  .message-input {
+    background-color: #fff; /* White background */
+    padding: 10px; /* Padding inside the input area */
+    display: flex; /* Flex layout for the input and buttons */
+    align-items: center; /* Vertically center the input and buttons */
+    border-top: 1px solid #ccc; /* Border separating the input from the chat */
+  }
+  
+  /* Text input styling */
+  .message-input input[type="text"] {
+    flex: 1; /* Take all available space */
+    padding: 10px; /* Padding inside the input */
+    border: 1px solid #ccc; /* Light gray border */
+    border-radius: 20px; /* Rounded input for aesthetics */
+    font-size: 16px; /* Larger font size for readability */
+    outline: none; /* Remove the default blue outline on focus */
+  }
+  
+  /* Send button styling */
+  .message-input button {
+    background-color: #008080; /* Teal background */
+    color: #fff; /* White text */
+    border: none; /* Remove default border */
+    border-radius: 50%; /* Round button */
+    padding: 10px; /* Padding inside the button */
+    margin-left: 10px; /* Space between the input and the button */
+    cursor: pointer; /* Show pointer on hover */
+  }
+  
+  /* Send button hover effect */
+  .message-input button:hover {
+    background-color: #006666; /* Darken the teal on hover */
+  }
+  
+  /* Emoji button for adding emojis to messages */
+  .message-input button#emojiBtn {
+    font-size: 20px; /* Larger font size for emoji */
+    background-color: transparent; /* Transparent background */
+    padding: 0; /* No padding to maintain a clean look */
+  }
+  
+  /* Attach button for file uploads */
+  .message-input button#attachBtn {
+    background-color: #008080; /* Teal background */
+    border-radius: 20px; /* Rounded edges for the button */
+    padding: 0 10px; /* Padding on the sides */
+    margin-left: 5px; /* Space between the input and button */
+    cursor: pointer; /* Pointer on hover */
+  }
+  
+  /* Hover effect for attach button */
+  .message-input button#attachBtn:hover {
+    background-color: #006666; /* Darker teal on hover */
+  }

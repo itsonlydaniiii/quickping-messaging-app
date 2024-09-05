@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+    <body>
+        <title>QuickPing</title>
+        <script type="module">
+            // Import the functions you need from the SDKs you need
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+            import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-analytics.js";
+            // TODO: Add SDKs for Firebase products that you want to use
+            // https://firebase.google.com/docs/web/setup#available-libraries
+          
+            // Your web app's Firebase configuration
+            // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+            const firebaseConfig = {
+                apiKey: "AIzaSyBM3fJf-zpcFW85lHQU-swKHFNH5V46gBA",
+                authDomain: "hefer-chats.firebaseapp.com",
+                databaseURL: "https://hefer-chats-default-rtdb.europe-west1.firebasedatabase.app",
+                projectId: "hefer-chats",
+                storageBucket: "hefer-chats.appspot.com",
+                messagingSenderId: "740077534248",
+                appId: "1:740077534248:web:95c1075775a0629f16091d",
+                measurementId: "G-MNNQYGFL23"
+              };
+          
+            // Initialize Firebase
+            const app = initializeApp(firebaseConfig);
+            const analytics = getAnalytics(app);
+          </script>
+    </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WhatsApp Dupe</title>
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+
+  <!-- Socket.io -->
+  <script src="/socket.io/socket.io.js"></script>
+
+  <!-- Emoji Button Library -->
+  <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@4.6.2/dist/index.js"></script>
+</head>
+<body>
+
+  <div class="chat-container">
+    <div class="chat-header">
+      <h1>WhatsApp Dupe</h1>
+    </div>
+
+    <div class="chat-body">
+      <!-- Messages will be appended here -->
+    </div>
+
+    <div class="message-input">
+      <button id="emojiBtn">😀</button>
+      <input type="file" id="fileInput" style="display:none">
+      <button id="attachBtn">Attach</button>
+      <input type="text" id="message" placeholder="Type a message">
+      <button id="sendBtn">Send</button>
+    </div>
+  </div>
+
+  <script>
+    // Initialize Firebase (Replace with your Firebase config)
+    var firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      databaseURL: "https://YOUR_PROJECT_ID.firebaseio.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    // Firebase database reference
+    const db = firebase.database();
+
+    // Initialize Socket.io
+    const socket = io();
+
+    // DOM Elements
+    const messageInput = document.getElementById('message');
+    const sendBtn = document.getElementById('sendBtn');
+    const chatBody = document.querySelector('.chat-body');
+    const fileInput = document.getElementById('fileInput');
+    const attachBtn = document.getElementById('attachBtn');
+    const emojiBtn = document.getElementById('emojiBtn');
+
+    // Emoji Picker setup
+    const picker = new EmojiButton();
+    emojiBtn.addEventListener('click', () => {
+      picker.togglePicker(emojiBtn);
+    });
+    picker.on('emoji', emoji => {
+      messageInput.value += emoji;
+    });
+
+    // Send a message
+    function sendMessage() {
+      const messageText = messageInput.value.trim();
+      
+      if (messageText !== '') {
+        // Send to Firebase
+        db.ref('messages').push({
+          text: messageText,
+          time: new Date().toLocaleTimeString()
+        });
+
+        // Send to Socket.io
+        socket.emit('chatMessage', messageText);
+
+        // Clear input
+        messageInput.value = '';
+      }
+    }
+
+    // Event listeners for sending messages
+    sendBtn.addEventListener('click', sendMessage);
+    messageInput.addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') {
+        sendMessage();
+      }
+    });
+
+    // Receive messages from Firebase
+    db.ref('messages').on('child_added', function(snapshot) {
+      const messageData = snapshot.val();
+      const message = document.createElement('div');
+      message.classList.add('message', 'received');
+      message.innerHTML = `
+        <p>${messageData.text}</p>
+        <span class="time">${messageData.time}</span>
+      `;
+      chatBody.appendChild(message);
+      chatBody.scrollTop = chatBody.scrollHeight;
+    });
+
+    // Listen for messages from Socket.io
+    socket.on('chatMessage', (messageText) => {
+      const message = document.createElement('div');
+      message.classList.add('message', 'received');
+      message.innerHTML = `
+        <p>${messageText}</p>
+        <span class="time">${new Date().toLocaleTimeString()}</span>
+      `;
+      chatBody.appendChild(message);
+      chatBody.scrollTop = chatBody.scrollHeight;
+    });
+
+    // Handle file attachment
+    attachBtn.addEventListener('click', () => {
+      fileInput.click();
+    });
+    fileInput.addEventListener('change', function() {
+      const file = fileInput.files[0];
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const fileData = e.target.result;
+        socket.emit('fileMessage', fileData);
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // Listen for file messages
+    socket.on('fileMessage', (fileData) => {
+      const message = document.createElement('div');
+      message.classList.add('message', 'received');
+      message.innerHTML = `<img src="${fileData}" alt="file" style="max-width: 100px;">`;
+      chatBody.appendChild(message);
+      chatBody.scrollTop = chatBody.scrollHeight;
+    });
+
+  </script>
+</body>
+</html>
